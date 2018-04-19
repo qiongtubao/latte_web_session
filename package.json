@@ -1,10 +1,10 @@
 {
 	"name": "latte_web_session",
-	"version":"0.0.1",
+	"version":"0.0.2",
 	"description": "latte_web_session",
 	"keywords": ["latte","latte_webServer", "latte_web_session"],
 	"author": "qiongtubao",
-	"main": "src/index.js",
+	"main": "lib/index.js",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/qiongtubao/latte_web_session.git"

@@ -1,5 +1,5 @@
 import {Store} from "./store"
-let RemoveIdle = require("latte_removeIdle")
+let RemoveIdle = require("latte_removeidle")
 let latte_lib = require("latte_lib")
 
 class MemoryStore  implements Store {
