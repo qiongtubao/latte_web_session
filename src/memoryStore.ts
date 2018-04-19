@@ -2,50 +2,45 @@ import {Store} from "./store"
 let RemoveIdle = require("latte_removeIdle")
 let latte_lib = require("latte_lib")
 
-class MemoryStore extends Store {
+class MemoryStore  implements Store {
     opts: any;
     sessions: any;
     removeIdle: any;
     constructor(opts) {
-        super();
-        this.opts = opts || {};
-        this.opts.path = this.opts.path || ".session.latte";
-        this.load();
         let self = this;
         this.removeIdle = new RemoveIdle({
             destroy: function(object) {
-                console.log(object);
-                for(let i in self.sessions) {
-                    if(self.sessions[i] == object) {
-                        console.log('delete');
-                        delete self.sessions[i];
-                        self.save();
-                    }
+                if(self.sessions[object]) {
+                    console.log('delete', object);
+                    delete self.sessions[object];
+                    self.save();
                 }
             },
             idleTimeoutMillis: opts.timeout ||  1000 * 10
         });
-        for(var i in self.sessions) {
-            this.removeIdle.release(this.sessions[i]);
+        this.opts = opts || {};
+        this.opts.path = this.opts.path || ".session.latte";
+        this.load();
+        for(let i in this.sessions) {
+            this.removeIdle.release(i);
         }
-        this.removeIdle.dispense();
     };
     get(key:string, callback) {
         let value = this.sessions[key];
         if(value) {
-            this.removeIdle.getIdle(value);
+            this.removeIdle.getIdle(key);
         }
         callback && callback(null, value);
     };
     set(key:string,value:any, callback) {
         this.sessions[key] = value;
-        this.removeIdle.release(value);
+        this.removeIdle.release(key);
         this.save();
         callback && callback(null, 1);
     };
     del(key:string, callback) {
         let value = this.sessions[key];
-        this.removeIdle.getIdle(value);
+        this.removeIdle.getIdle(key);
         delete this.sessions[key];
         this.save();
         callback && callback();
