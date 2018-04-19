@@ -25,6 +25,7 @@ class Session {
     id: string;
     data: any;
     isChange: boolean;
+    cookie: any;
     constructor(id) {
         this.id = id;
         this.data = {};
@@ -32,6 +33,9 @@ class Session {
     setData(data) {
         this.data = data;
         this.isChange = true;
+    }
+    getData(data) {
+        return this.data;
     }
 }
 class SessionUtil {
@@ -53,16 +57,11 @@ class SessionUtil {
             }
             let key = ctx.cookie.get(this.key);
             if(!key && this.useAjaxKey) {
-                key = ctx.gets[this.useAjaxKey] || ctx.posts[this.useAjaxKey];
+                key = ctx.gets[this.useAjaxKey] || ctx.posts?ctx.posts[this.useAjaxKey]:undefined;
             }
             ctx.sessionStore = this.store;
             let createSession = (oldKey:any)=> {
                 key = oldKey || uid(24, undefined);
-                /*
-                ctx.cookie.set(self.key, key, {
-                    expires: new Date(Date.now() + self.timeout)
-                });
-                */
                ctx.session = new Session(key);
                next();
             }
